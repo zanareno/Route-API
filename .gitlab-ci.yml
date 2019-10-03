@@ -1,0 +1,82 @@
+image: openjdk:8-jdk-alpine
+cache:
+  paths:
+  - .m2/
+  - "*/target"
+
+stages:
+- setup
+- build
+- deploy
+- release
+
+variables:
+  CONTAINER_IMAGE: $CI_REGISTRY_IMAGE
+  MAVEN_OPTS: "-Dmaven.repo.local=.m2"
+
+prepare:
+  stage: setup
+  script:
+  - mvn help:evaluate -Dexpression=project.version -q -DforceStdout > POM_VERSION
+  - echo "extracting project's version ..."
+  - echo "version $(cat POM_VERSION)"
+  - echo "container $CONTAINER_IMAGE"
+  artifacts:
+    expire_in: 20 mins
+    paths:
+    - POM_VERSION
+
+build-jar:
+  stage: build
+  before_script:
+  - export POM_VERSION=$(cat POM_VERSION)
+  script:
+  - echo "building source with version $POM_VERSION ... "
+  - mvn package
+  artifacts:
+    expire_in: 20 mins
+    paths:
+    - demo-services/target/app.jar
+
+Publish jars:
+  stage: deploy
+  script:
+  - echo "publishing jars to nexus ..."
+  - mvn deploy -DskipTests
+  allow_failure: false
+
+Release this version:
+  stage: release
+  image: docker:stable
+  before_script:
+  - docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
+  - export POM_VERSION=$(cat POM_VERSION)
+  script:
+  - echo "publishing image $CONTAINER_IMAGE:$POM_VERSION  ..."
+  - docker build -t $CONTAINER_IMAGE:$POM_VERSION .
+  - docker push $CONTAINER_IMAGE:$POM_VERSION
+  dependencies:
+  - prepare
+  - build-jar
+  except:
+  - master
+  when: manual
+  allow_failure: false
+
+Release master as latest:
+  stage: release
+  image: docker:stable
+  before_script:
+  - docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
+  - export POM_VERSION=$(cat POM_VERSION)
+  script:
+  - docker build -t $CONTAINER_IMAGE:$POM_VERSION -t $CONTAINER_IMAGE:latest .
+  - docker push $CONTAINER_IMAGE:$POM_VERSION
+  - docker push $CONTAINER_IMAGE:latest
+  dependencies:
+  - prepare
+  - build-jar
+  only:
+  - master
+  when: manual
+  allow_failure: false

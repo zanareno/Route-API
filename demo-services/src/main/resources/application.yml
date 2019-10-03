@@ -1,0 +1,53 @@
+spring:
+  application-name: route-api-demo
+
+  flyway:
+    enabled: true
+  jpa:
+    hibernate:
+      dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+      ddl-auto: none
+  datasource:
+    driverClassName: com.mysql.cj.jdbc.Driver
+    url: "jdbc:mysql://localhost:3306/vehicle_demo"
+    password: "root"
+    username: "root"
+
+server:
+  port: 8080
+  tomcat:
+    accesslog:
+      enabled: true
+      pattern: '%h %t "%r" %s %b'
+  servlet:
+    context-path: /route-api/v1.0
+
+
+# expose actuator endpoint via HTTP
+management.server.port: 9000
+management.endpoints.web.exposure.include: info,health
+management.endpoints.enabled-by-default: true
+management.endpoints.jmx.enabled: false
+management.endpoint.health.show-details: always
+
+#Whether security should be enabled or disabled altogether
+#management.security.enabled: false
+#management.security.role: SUPERUSER
+#security.user.name: admin
+#security.user.password: secret
+
+spring.mvc.throw-exception-if-no-handler-found: true
+
+configuration:
+  googleApiKey:
+  googleEndpointUrl: https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&origins={origin}&destinations={destination}&key={key}
+  michelinApiKey:
+  michelinEndpointUrl: http://apir.viamichelin.com/apir/1/geocode4F.json?country=FRA&address=rue+des+Edelweiss&city=Annecy&authKey={key}&expires={expires}&signature={signature}
+  maxAttempts: 2
+  backoff: 2000
+
+springfox:
+  documentation:
+    swagger:
+      v2:
+        path: /api-docs

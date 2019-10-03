@@ -1,0 +1,48 @@
+version: '2.1'
+
+networks:
+  network:
+    driver: bridge
+
+services:
+  mysql:
+    image: mysql:8.0.17
+    container_name: mysql
+    hostname: mysql
+    restart: always
+    ports:
+    - "3308:3306"
+    volumes:
+    - ./mysql/scripts:/scripts
+    environment:
+      MYSQL_DATABASE: vehicle_demo
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root
+    healthcheck:
+      test: mysqladmin ping -h localhost
+      timeout: 10s
+      retries: 10
+    networks:
+    - network
+
+  route-api:
+    image: route
+    ports:
+    - "8080:8080"
+    - "9000:9000"
+    container_name: route
+    hostname: route
+    environment:
+    - server.port=8080
+    - SPRING_DATASOURCE_USERNAME=root
+    - SPRING_DATASOURCE_PASSWORD=root
+    - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/vehicle_demo
+    - CONFIGURATION_GOOGLEAPIKEY=AIzaSyDzziSH-0BnwqoA4pP_gTmy228CzIU9xOM
+    - CONFIGURATION_GOOGLEENDPOINTURL=https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&origins={origin}&destinations={destination}&key={key}
+    - SERVICE_JVM_ARGS=-Xms256m -Xmx256m -Xdebug -Xrunjdwp:server=y,transport=dt_socket,address=5005,suspend=n
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+    - network

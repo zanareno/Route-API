@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.mcdemo</groupId>
+  <artifactId>demo</artifactId>
+  <version>1.0.0</version>
+  <packaging>pom</packaging>
+
+
+  <name>Route API</name>
+  <description>Demo project for mcdemo</description>
+
+  <properties>
+    <java.version>1.8</java.version>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <spring.boot.version>2.1.8.RELEASE</spring.boot.version>
+    <mysql-connector-java.version>8.0.15</mysql-connector-java.version>
+    <lombok.version>1.18.6</lombok.version>
+    <json-path.version>2.4.0</json-path.version>
+    <commons-codec.version>1.13</commons-codec.version>
+    <modelmapper.version>2.3.5</modelmapper.version>
+    <flyway-core.version>5.2.4</flyway-core.version>
+    <spring-boot-maven-plugin.version>3.2</spring-boot-maven-plugin.version>
+    <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
+    <sql-maven-plugin.version>1.5</sql-maven-plugin.version>
+    <h2.version>1.4.197</h2.version>
+    <spring-retry.version>1.2.4.RELEASE</spring-retry.version>
+    <springfox.version>2.9.2</springfox.version>
+    <maven-dependency-plugin.version>3.1.1</maven-dependency-plugin.version>
+    <maven-jar-plugin.version>3.1.0</maven-jar-plugin.version>
+    <build-helper-maven-plugin.version>3.0.0</build-helper-maven-plugin.version>
+    <jacoco-maven-plugin.version>0.8.2</jacoco-maven-plugin.version>
+  </properties>
+
+  <modules>
+    <module>demo-dto</module>
+    <module>demo-services</module>
+    <module>demo-gateway</module>
+  </modules>
+
+  <dependencyManagement>
+    <dependencies>
+
+      <dependency>
+        <groupId>com.mcdemo</groupId>
+        <artifactId>demo-dto</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.mcdemo</groupId>
+        <artifactId>demo-services</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.mcdemo</groupId>
+        <artifactId>demo-gateway</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-dependencies</artifactId>
+        <version>${spring.boot.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+
+      <!-- Swagger -->
+      <dependency>
+        <groupId>io.springfox</groupId>
+        <artifactId>springfox-swagger2</artifactId>
+        <version>${springfox.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.springfox</groupId>
+        <artifactId>springfox-swagger-ui</artifactId>
+        <version>${springfox.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.flywaydb</groupId>
+        <artifactId>flyway-core</artifactId>
+        <version>${flyway-core.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.projectlombok</groupId>
+        <artifactId>lombok</artifactId>
+        <version>${lombok.version}</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.modelmapper</groupId>
+        <artifactId>modelmapper</artifactId>
+        <version>${modelmapper.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>mysql</groupId>
+        <artifactId>mysql-connector-java</artifactId>
+        <version>${mysql-connector-java.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.jayway.jsonpath</groupId>
+        <artifactId>json-path</artifactId>
+        <version>${json-path.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>commons-codec</groupId>
+        <artifactId>commons-codec</artifactId>
+        <version>${commons-codec.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.retry</groupId>
+        <artifactId>spring-retry</artifactId>
+        <version>${spring-retry.version}</version>
+      </dependency>
+    </dependencies>
+
+  </dependencyManagement>
+
+  <scm>
+    <connection>scm:git:ssh://zanareno@bitbucket.org/zanareno/route-api.git</connection>
+    <developerConnection>scm:git:ssh://zanareno@bitbucket.org/zanareno/route-api.git</developerConnection>
+    <url>https://zanareno@bitbucket.org/zanareno/route-api.git</url>
+    <tag>demo-1.0.0</tag>
+  </scm>
+
+  <distributionManagement>
+    <repository>
+      <id>maven-mcdemo</id>
+      <url>http://nexus.mcdemo.com/repository/maven-mcdemo-release/</url>
+    </repository>
+    <snapshotRepository>
+      <id>maven-mcdemo</id>
+      <url>http://nexus.mcdemo.com/repository/maven-mcdemo-snapshot/</url>
+    </snapshotRepository>
+  </distributionManagement>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-maven-plugin</artifactId>
+          <version>${spring-boot-maven-plugin.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>${maven-compiler-plugin.version}</version>
+          <configuration>
+            <source>8</source>
+            <target>8</target>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+</project>

@@ -1,0 +1,19 @@
+spring:
+  application-name: mcdemo-demo
+
+  flyway:
+    enabled: true
+
+server:
+  tomcat:
+    accesslog:
+      enabled: true
+      pattern: '%h %t "%r" %s %b'
+  servlet:
+    context-path: /
+
+configuration:
+  googleApiKey: AIzaSyDzziSH-0BnwqoA4pP_gTmy228CzIU9xOM
+  distanceEndpointUrl: https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&origins={origin}&destinations={destination}&key={key}
+  maxAttempts: 2
+  backoff: 2000
